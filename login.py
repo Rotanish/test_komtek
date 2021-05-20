@@ -7,6 +7,7 @@ from pony.orm import *
 
 
 class Login:
+    '''Модуль для работы с сессиями на стороне сервера'''
     def __init__(self, db):
         self.db = db
 
@@ -33,6 +34,7 @@ class Login:
         return True
 
     def kill_session(self, session, identificator):
+        '''Удаление сторонней сессии'''
         if not 'identificator' in session:
             return False
         ses = self.db.Session.get(identificator=identificator)
@@ -44,6 +46,7 @@ class Login:
         return True
 
     def logout_all(self, session):
+        '''Удаление всех сессии'''
         user = self.get_user(session)
         if not user:
             return False
@@ -52,6 +55,7 @@ class Login:
         return True
 
     def get_user(self, session):
+        '''Нахождение пользователя по сессии'''
         self.get_identificator(session)
         ses = self.db.Session.get(identificator=session['identificator'])
         if ses:
@@ -60,12 +64,17 @@ class Login:
         return None
 
     def new_identificator(self):
+        '''Генерация идентификатора'''
         while True:
             random_identificator = str(random())
-            if not select(s for s in self.db.Session if s.identificator == random_identificator):
+            if not select(
+                    s for s in self.db.Session if 
+                        s.identificator == random_identificator
+                    ):
                 return random_identificator
 
     def get_identificator(self, session):
+        '''Получение идентификатора'''
         if not 'identificator' in session:
             session['identificator'] = self.new_identificator()
         return session['identificator']

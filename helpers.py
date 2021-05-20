@@ -17,14 +17,35 @@ def dbo_to_json(dbo, metod="only", exclude='', only=[]):
         with_collections = True
     if isinstance(dbo, Iterable):
         if only:
-            return json.dumps([i.to_dict(related_objects=related_objects, with_collections=with_collections, only=only) for i in dbo], default=str)
-        return json.dumps([i.to_dict(related_objects=related_objects, with_collections=with_collections, exclude=exclude) for i in dbo], default=str)
+            return [i.to_dict(related_objects=related_objects, with_collections=with_collections, only=only) for i in dbo]
+        return [i.to_dict(related_objects=related_objects, with_collections=with_collections, exclude=exclude) for i in dbo]
     elif type(dbo) == None or not dbo:
-        return json.dumps({})
+        return {}
     else:
         if only:
-            return json.dumps(dbo.to_dict(related_objects=related_objects, with_collections=with_collections, only=only), default=str)
-        return json.dumps(dbo.to_dict(related_objects=related_objects, with_collections=with_collections, exclude=exclude), default=str)
+            return dbo.to_dict(related_objects=related_objects, with_collections=with_collections, only=only)
+        return dbo.to_dict(related_objects=related_objects, with_collections=with_collections, exclude=exclude)
+
+def db_dirs_to_list_dict(db_dirs, date=None):
+    '''Перевод обьекта справочника базы данных в список словарей'''
+    dirs = []
+    for db_dir in db_dirs:
+        directory = db_dir.to_dict()
+        
+        # добавление информации о версиях справочника
+        if date:
+            directory['versions'] = [ver.to_dict() for ver in db_dir.versions if ver.date_start < date]
+        else:
+            directory['versions'] = [ver.to_dict() for ver in db_dir.versions]
+
+        # приведение даты к формату
+        for i in range(len(directory['versions'])):
+            directory['versions'][i]['date_start']= \
+                directory['versions'][i]['date_start'].strftime('%d.%m.%Y')
+
+        if not date or len(directory['versions']) != 0:
+            dirs.append(directory)
+    return dirs
 
 
 def strip_form(form):

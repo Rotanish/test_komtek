@@ -6,6 +6,7 @@ from hashlib import sha3_256 as s_hash
 
 
 class CSRF:
+    '''Модуль для защиты от CSRF'''
     def __init__(self, server_key, salt='\xf7f\xfb\x94\x9d\xeaeO\x93\xde\xdf\xc8 \xf6D\xb2\xe7\x8b\x84\xb4'):
         self.server_key = str(server_key)
         self.salt = str(salt)

@@ -27,6 +27,7 @@ class DirectoryItem(db.Entity):
     identificator = PrimaryKey(int, auto=True)
     versions = Required('DirectoryVersion', reverse='items')
     code = Required(str)
+    composite_key(versions, code)
     value = Required(str)
 
 

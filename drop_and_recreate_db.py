@@ -35,6 +35,8 @@ def test_add():
                    )
     d2 = Directory(name='dir_test2',
                    )
+    for i in range(1000):
+        Directory(name=str(i))
     flush()
     d1v1 = DirectoryVersion(directory=d1,
                             version='1',
@@ -61,10 +63,11 @@ def test_add():
                   code='код2',
                   value='значение2'
                   )
-    DirectoryItem(versions=d2v1,
-                  code='код',
-                  value='значение'
-                  )
+    for i in range(1000):
+        DirectoryItem(versions=d2v1,
+                      code=str(i),
+                      value='значение'
+                      )
     flush()
 
 
